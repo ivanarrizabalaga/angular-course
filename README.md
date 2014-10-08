@@ -1,3 +1,7 @@
+# Step by step https://www.angularcourse.com
+Simply a demo project that follows a step by step course.
+The layout of the project is based on the repo https://github.com/fredsa/appengine-angular-seed-python
+
 # angular-seed — the seed for AngularJS apps
 
 This project is an application skeleton for a typical [AngularJS](http://angularjs.org/) web app.
