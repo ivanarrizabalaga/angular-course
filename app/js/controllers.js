@@ -6,11 +6,13 @@ angular.module('myApp.controllers', [])
   .controller('LandingPageController', [function() {
 
   }])
-  .controller('WaitlistController',['$scope',function($scope){
-  	$scope.parties = [];
+  .controller('WaitlistController',['$scope','$firebase',function($scope,$firebase){
+  	var partiesRef = new Firebase('https://waitandeat-ivan.firebaseio.com/');
+
+  	$scope.parties = $firebase(partiesRef);
   	$scope.party = {name:'',phone:'',size:''};
   	$scope.saveParty = function(){
-  		$scope.parties.push($scope.party);
+  		$scope.parties.$add($scope.party);
   		$scope.party = {name:'',phone:'',size:''};
   	};
   }]);
