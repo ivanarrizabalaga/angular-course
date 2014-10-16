@@ -46,33 +46,22 @@ angular.module('myApp.controllers', [])
             $scope.parties.$save(party.$id);
         };
     }])
-    .controller('AuthController', ['$scope','$firebaseSimpleLogin','$location','FIREBASE_URL',function($scope,$firebaseSimpleLogin,$location,FIREBASE_URL) {
-        var authRef = new Firebase(FIREBASE_URL);
-        var auth = $firebaseSimpleLogin(authRef);
-
+    .controller('AuthController', ['$scope','authService',function($scope,authService) {
+        //Object bound to inputs on the register and login pages
         $scope.user = {email:'',password:''};
 
         //Register user against firebase
         $scope.register = function(){
-            auth.$createUser($scope.user.email,$scope.user.password).then(function(data){
-                console.log(data);
-                $scope.login();
-            });
+            authService.register($scope.user);
         };
 
         //Login user
         $scope.login = function(){
-            auth.$login('password',$scope.user).then(function(data){
-                console.log(data);
-                $location.path('/waitlist');
-            });
+            authService.login($scope.user);
         };
 
         //Log out user
         $scope.logout = function(){
-            auth.$logout();            
-            $location.path('/');
+            authService.logout();
         };
-
-
     }]);
