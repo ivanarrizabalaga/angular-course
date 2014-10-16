@@ -7,7 +7,12 @@
 // In this case it is a simple value service.
 angular.module('myApp.services', [])
 	.value('FIREBASE_URL', 'https://waitandeat-ivan.firebaseio.com/')
-	.factory('authService', function($firebaseSimpleLogin, $location, FIREBASE_URL) {
+	.factory('dataService',function($firebase,FIREBASE_URL){
+		var dataRef= new Firebase(FIREBASE_URL);	
+		var fireData = $firebase(dataRef);
+		return fireData
+	})
+	.factory('authService', function($firebaseSimpleLogin, $location, $rootScope, FIREBASE_URL) {
 		var authRef = new Firebase(FIREBASE_URL);
 		var auth = $firebaseSimpleLogin(authRef);
 
@@ -30,5 +35,45 @@ angular.module('myApp.services', [])
 			}
 		};
 
+		//Listening login event
+		$rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
+			$rootScope.currentUser = user;
+		});
+
+		//Listening logout event
+		$rootScope.$on("$firebaseSimpleLogin:logout", function(e, user) {
+			$rootScope.currentUser = null;
+		});
+
 		return authServiceObject;
+	})
+	.factory('partyService', function(dataService) {
+		//Connect $scope.parties to live Firebase data.
+		var parties = dataService.$child('parties');
+
+		var partyServiceObject = {
+			parties: parties,
+			saveParty: function(party) {
+				parties.$add(party);
+			},
+		};
+
+		return partyServiceObject;
+	})
+	.factory('textMessageService', function(dataService,partyService) {
+		var textMessages = dataService.$child('textMessages');
+		var textMessageServiceObject = {
+			sendTextMessage: function(party) {
+				var newTextMessage = {
+					phoneNumber: party.phone,
+					size: party.size,
+					name: party.name
+				};
+				textMessages.$add(newTextMessage);
+				party.notified = 'Yes';
+				partyService.parties.$save(party.$id);
+			}
+		};
+
+		return textMessageServiceObject;
 	});
