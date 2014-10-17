@@ -26,7 +26,7 @@ angular.module('myApp.controllers', [])
 
             //Adds a party to firebase
             $scope.saveParty = function() {
-                partyService.saveParty($scope.newParty);
+                partyService.saveParty($scope.newParty,$scope.currentUser.id);
                 $scope.newParty = {
                     name: '',
                     phone: '',

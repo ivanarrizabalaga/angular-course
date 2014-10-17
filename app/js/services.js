@@ -50,11 +50,12 @@ angular.module('myApp.services', [])
 	.factory('partyService', function(dataService) {
 		//Connect $scope.parties to live Firebase data.
 		var parties = dataService.$child('parties');
+		var users = dataService.$child('users');
 
 		var partyServiceObject = {
 			parties: parties,
-			saveParty: function(party) {
-				parties.$add(party);
+			saveParty: function(party,userId) {				
+				users.$child(userId).$child('parties').$add(party);
 			},
 		};
 
