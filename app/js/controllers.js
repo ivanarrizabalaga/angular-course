@@ -9,11 +9,15 @@ angular.module('myApp.controllers', [])
 
         }
     ])
-    .controller('WaitlistController', ['$scope','partyService','textMessageService',
-        function($scope,partyService,textMessageService) {
+    .controller('WaitlistController', ['authService','$scope','partyService','textMessageService',
+        function(authService,$scope,partyService,textMessageService) {
 
-            //Bind Firebase parties to $scope
-            $scope.parties = partyService.parties;
+            //Bind user's parties to $scope.parties
+            authService.getCurrentUser().then(function(user){
+                if(user){
+                    $scope.parties = partyService.getPartiesByUserId(user.id);
+                }
+            });
 
             //Object to store data from the waitlist form
             $scope.newParty = {
@@ -38,7 +42,7 @@ angular.module('myApp.controllers', [])
 
             //Sends a SMS to a party
             $scope.sendTextMessage = function(party) {
-                textMessageService.sendTextMessage(party);
+                textMessageService.sendTextMessage(party,$scope.currentUser.id);
             };
         }
     ])
